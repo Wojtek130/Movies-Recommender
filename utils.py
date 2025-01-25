@@ -1,4 +1,7 @@
 import re
+import numpy as np
+from sklearn.metrics.pairwise import cosine_similarity
+
 
 def find_movie(df, identifier):
     if isinstance(identifier, int):  # Search by 'id'
@@ -37,3 +40,20 @@ def find_movie(df, identifier):
             return result_regex
     else:
         raise ValueError("Identifier must be either an integer (id) or a string (title)")
+    
+def get_content_similarity(df, movie_id, top_n=10):
+    """
+    Get top N similar movies based on precomputed embeddings.
+    """
+    # Find the embedding of the given movie
+    movie_embedding = df.loc[df['id'] == movie_id, 'embeddings'].values[0]
+    movie_embedding = np.array(movie_embedding).reshape(1, -1)
+
+    # Compute cosine similarity with all other movies
+    all_embeddings = np.vstack(df['embeddings'])
+    similarities = cosine_similarity(movie_embedding, all_embeddings).flatten()
+
+    # Get the top N similar movies
+    df['similarity'] = similarities
+    top_similar_movies = df.sort_values(by='similarity', ascending=False).head(top_n + 1)  # Exclude the movie itself
+    return top_similar_movies.iloc[1:]  # Exclude the input movie
