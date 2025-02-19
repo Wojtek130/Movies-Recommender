@@ -37,6 +37,8 @@ def find_movie(df, identifier):
         raise ValueError("Identifier must be either an integer (id) or a string (title)")
     
 def get_content_similarity(df, movie_id, top_n=10):
+    # print(df, "!!!")
+    # return df.loc[df['id'] == movie_id, 'embeddings']
     movie_embedding = df.loc[df['id'] == movie_id, 'embeddings'].values[0]
     movie_embedding = np.array(movie_embedding).reshape(1, -1)
     all_embeddings = np.vstack(df['embeddings'])

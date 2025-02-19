@@ -1,6 +1,8 @@
 archive.zip
 archive/
 dataset/
+!dataset/movies_data_embeddings_small.csv
 file_utils.py
 __pycache__/
 debug.json
+decrease_file_size.ipynb
